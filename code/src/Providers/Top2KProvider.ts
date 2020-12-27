@@ -10,7 +10,11 @@ export default class Top2KProvider {
     private static list: Array<any> = new Array<any>();
 
     public static async GetTop2KList() {
-        this.list = await this.GetTopListJSON();
+        if (this.list.length == 0) {
+            this.list = await this.GetTopListJSON();
+        }
+
+        return this.list;
     }
 
     public static async GetNewCurrentSong() {

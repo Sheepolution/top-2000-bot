@@ -19,4 +19,26 @@ export default class Top2KEmbeds {
 
         return embed;
     }
+
+    public static GetSongListEmbed(songList:Array<Top2KSong>, searchType:string, searchKey:string) {
+
+        var songListString = '';
+
+        for (const song of songList) {
+            const addition = `#${song.GetCurrentPosition()} ${song.GetTitle()} - ${song.GetArtist()}\n`;
+            if (songListString.length + addition.length > 2048) {
+                break;
+            }
+
+            songListString += addition;
+        }
+
+        const embed = new MessageEmbed()
+            .setColor(SettingsConstants.COLORS.DEFAULT)
+            .setTitle(`Nummers met '${searchKey}' als ${searchType}`)
+            .setDescription(songListString);
+
+        return embed;
+    }
+
 }

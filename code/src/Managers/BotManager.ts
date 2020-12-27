@@ -1,10 +1,13 @@
 import DiscordService from '../Services/DiscordService';
 import MessageService from '../Services/MessageService';
 import SettingsConstants from '../Constants/SettingsConstants';
-import { TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { Utils } from '../Utils/Utils';
 import Top2KProvider from '../Providers/Top2KProvider';
 import Top2KEmbeds from '../Embeds/Top2KEmbeds';
+import DiscordUtils from '../Utils/DiscordUtils';
+import CommandHandler from '../Handlers/CommandHandler';
+import IMessageInfo from '../Interfaces/IMessageInfo';
 
 export default class BotManager {
 
@@ -24,6 +27,25 @@ export default class BotManager {
         setInterval(() => {
             BotManager.SendTop2KUpdates();
         }, Utils.GetSecondsInMilliseconds(15))
+    }
+
+    public static async OnMessage(message:Message) {
+        if (message.guild == null) {
+            return;
+        }
+
+        if (message.member == null) {
+            return;
+        }
+
+        const messageInfo:IMessageInfo = DiscordUtils.ParseMessageToInfo(message, message.member);
+
+        var content = message.content.trim();
+        var prefix = SettingsConstants.PREFIX;
+
+        if (content.startsWith(prefix)) {
+            await CommandHandler.OnCommand(messageInfo, content);
+        }
     }
 
     public static GetLiveBlogChannel() {

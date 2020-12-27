@@ -1,4 +1,6 @@
+import { GuildMember, Message } from 'discord.js';
 import RegexConstants from '../Constants/RegexConstants';
+import IMessageInfo from '../Interfaces/IMessageInfo';
 
 export default class DiscordUtils {
 
@@ -28,6 +30,16 @@ export default class DiscordUtils {
         }
 
         return null;
+    }
+
+    public static ParseMessageToInfo(message:Message, member:GuildMember) {
+        const info:IMessageInfo = {
+            member: member,
+            channel: message.channel,
+            message: message,
+        };
+
+        return info;
     }
 
     public static ParseChannelMentionsToIds(channels:Array<string>) {

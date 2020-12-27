@@ -8,6 +8,7 @@ class Main {
 
     constructor() {
         Discord.SetEventReadyCallback(BotManager.OnReady);
+        Discord.SetEventMessageCallback(BotManager.OnMessage);
         Discord.Init();
     }
 }
