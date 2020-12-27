@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "docs"
+		},
+		{
+			"path": "code"
+		}
+	],
+	"settings": {
+		"search.exclude": {
+			"*lib": true
+		},
+		"typescript.preferences.quoteStyle": "single"
+	}
+}

@@ -1,0 +1,46 @@
+{
+  "name": "robot-trip",
+  "version": "1.0.0",
+  "description": "A Discord bot for posting NOS Liveblog posts.",
+  "main": "lib/index.js",
+  "scripts": {
+    "start": "ts-node-dev --respawn src/Index.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sheepolution/robot-trip.git"
+  },
+  "author": "Sheepolution",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sheepolution/robot-trip/issues"
+  },
+  "homepage": "https://github.com/Sheepolution/robot-trip#readme",
+  "dependencies": {
+    "@types/pg": "^7.14.5",
+    "@types/ws": "^7.2.6",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "async-redis": "^1.1.7",
+    "discord.js": "^12.3.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
+    "jquery": "^3.5.1",
+    "jsdom": "^16.4.0",
+    "knex": "^0.19.5",
+    "node-fetch": "^2.6.1",
+    "objection": "^1.6.11",
+    "perfy": "^1.1.5",
+    "pg": "^7.18.2",
+    "redis": "^2.8.0",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.63",
+    "uuid": "^3.4.0",
+    "xhr": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.62",
+    "typescript": "^4.0.3"
+  }
+}
