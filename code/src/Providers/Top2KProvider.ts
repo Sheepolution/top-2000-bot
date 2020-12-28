@@ -7,6 +7,7 @@ export default class Top2KProvider {
 
     private static currentSongId: string;
     private static currentPosition: number;
+    private static currentPresenterId: string;
     private static list: Array<any> = new Array<any>();
 
     public static async GetTop2KList() {
@@ -30,6 +31,21 @@ export default class Top2KProvider {
         }
 
         return song;
+    }
+
+    public static async GetNewCurrentPresenter() {
+        const broadcast = await this.GetCurrentBroadcastJSON();
+        const presenter = broadcast.presenters[0];
+
+        if (this.currentPresenterId != null && this.currentSongId == presenter.id) {
+            return;
+        }
+
+        this.currentPresenterId = presenter.id;
+
+        presenter.image = broadcast.image;
+
+        return presenter
     }
 
     public static GetSongObject() {
@@ -66,6 +82,10 @@ export default class Top2KProvider {
 
     private static async GetCurrentSongJSON() {
         return await this.GetJSON(`${Top2KConstants.BASE_URL}/?option=com_ajax&plugin=nowplaying&format=json&channel=nporadio2`);
+    }
+
+    private static async GetCurrentBroadcastJSON() {
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/?option=com_ajax&plugin=currentbroadcast&type=guide&format=json&channel=nporadio2`);
     }
 
     private static async GetJSON(url: string) {

@@ -108,4 +108,12 @@ export default class DiscordService {
 
         return await textChannel.send(reply);
     }
+
+    public static async SetAvatar(imageUrl: string) {
+        this.client.user?.setAvatar(imageUrl);
+    }
+
+    public static async SetNickname(member: GuildMember, name: string) {
+        await member.setNickname(name);
+    }
 }

@@ -23,9 +23,15 @@ export default class BotManager {
         // Prevent from current song being sent twice on restart
         await Top2KProvider.GetNewCurrentSong();
 
+        BotManager.UpdatePresenter();
+
         setInterval(() => {
             BotManager.SendTop2KUpdates();
         }, Utils.GetSecondsInMilliseconds(15))
+
+        setInterval(() => {
+            BotManager.UpdatePresenter();
+        }, Utils.GetMinutesInMilliseconds(1))
     }
 
     public static async OnMessage(message:Message) {
@@ -57,6 +63,18 @@ export default class BotManager {
             const song = Top2KProvider.GetSongObject();
             if (song != null) {
                 MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
+            }
+        }
+    }
+
+    public static async UpdatePresenter() {
+        const newPresenter = await Top2KProvider.GetNewCurrentPresenter();
+        if (newPresenter != null) {
+            const guild = this.top2KChannel.guild;
+            const member = guild.members.cache.get(SettingsConstants.BOT_ID);
+            if (member != null) {
+                await DiscordService.SetNickname(member, newPresenter.name);
+                await DiscordService.SetAvatar(newPresenter.image);
             }
         }
     }
