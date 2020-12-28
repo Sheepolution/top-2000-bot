@@ -12,8 +12,6 @@ import { Redis } from '../Providers/Redis';
 
 export default class BotManager {
 
-    private static liveBlogChannel:TextChannel;
-    private static sportsChannel:TextChannel;
     private static top2KChannel:TextChannel;
 
     public static async OnReady() {
@@ -47,14 +45,6 @@ export default class BotManager {
         if (content.startsWith(prefix)) {
             await CommandHandler.OnCommand(messageInfo, content);
         }
-    }
-
-    public static GetLiveBlogChannel() {
-        return BotManager.liveBlogChannel;
-    }
-
-    public static GetSportsChannel() {
-        return BotManager.sportsChannel;
     }
 
     public static GetTop2KChannel() {

@@ -21,14 +21,6 @@ export default class MessageService {
         return DiscordService.SendEmbed(messageInfo.channel, embed, message)
     }
 
-    public static async SendMessageToLiveBlogChannel(message:string, embed?:MessageEmbed) {
-        return await this.SendMessage(BotManager.GetLiveBlogChannel(), message, embed);
-    }
-
-    public static async SendMessageToSportsChannel(message:string, embed?:MessageEmbed) {
-        return await this.SendMessage(BotManager.GetSportsChannel(), message, embed);
-    }
-
     public static async SendMessageToTop2KChannel(message:string, embed?:MessageEmbed) {
         return await this.SendMessage(BotManager.GetTop2KChannel(), message, embed);
     }
