@@ -30,7 +30,7 @@ export default class SongHandler {
             searchType = 'titel';
         }
 
-        searchKey = searchKey.toLowerCase();
+        const lowerSearchKey = searchKey.toLowerCase();
 
         var songs = new Array<any>();
 
@@ -41,7 +41,7 @@ export default class SongHandler {
             case 'name':
             case 'nummer':
             case 'lied':
-                songs = list.filter(s => s.sorts.includes(searchKey));
+                songs = list.filter(s => s.sorts.includes(lowerSearchKey));
                 break;
             case 'author':
             case 'artiest':
@@ -49,12 +49,12 @@ export default class SongHandler {
             case 'muziekant':
             case 'componist':
             case 'composer':
-                songs = list.filter(s => s.sorta.includes(searchKey));
+                songs = list.filter(s => s.sorta.includes(lowerSearchKey));
                 break;
             case 'plaats':
             case 'getal':
                 // eslint-disable-next-line no-case-declarations
-                const position = parseInt(searchKey);
+                const position = parseInt(lowerSearchKey);
                 if (position == null) {
                     MessageService.ReplyMessage(messageInfo, `${searchKey} is geen geldig getal.`, false, true);
                     return;
