@@ -23,8 +23,7 @@ export default class BotManager {
 
         // Prevent from current song being sent twice on restart
         await Top2KProvider.GetNewCurrentSong();
-
-        BotManager.UpdatePresenter();
+        await Top2KProvider.GetNewCurrentPresenter();
 
         setInterval(() => {
             BotManager.SendTop2KUpdates();

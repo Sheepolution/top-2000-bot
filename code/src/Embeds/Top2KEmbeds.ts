@@ -20,7 +20,7 @@ export default class Top2KEmbeds {
         return embed;
     }
 
-    public static GetSongListEmbed(songList:Array<Top2KSong>, searchType:string, searchKey:string) {
+    public static GetSongListEmbed(songList:Array<Top2KSong>, title:string) {
 
         var songListString = '';
 
@@ -35,10 +35,9 @@ export default class Top2KEmbeds {
 
         const embed = new MessageEmbed()
             .setColor(SettingsConstants.COLORS.DEFAULT)
-            .setTitle(`Nummers met '${searchKey}' als ${searchType}`)
+            .setTitle(title)
             .setDescription(songListString);
 
         return embed;
     }
-
 }

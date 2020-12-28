@@ -17,6 +17,11 @@ export default class SongHandler {
             case 'remind':
                 this.OnRemind(messageInfo, parseInt(args[0]));
                 break;
+            case 'lijst':
+            case 'volgende':
+            case 'next':
+                this.OnList(messageInfo);
+                break;
             default:
                 return false;
         }
@@ -86,7 +91,7 @@ export default class SongHandler {
             return;
         }
 
-        MessageService.ReplyMessage(messageInfo, '', undefined, true, Top2KEmbeds.GetSongListEmbed(detailedSongList, searchType, searchKey));
+        MessageService.ReplyMessage(messageInfo, '', undefined, true, Top2KEmbeds.GetSongListEmbed(detailedSongList, `Nummers met '${searchKey}' als ${searchType}`));
     }
 
     private static async OnRemind(messageInfo:IMessageInfo, position?:number) {
@@ -124,5 +129,19 @@ export default class SongHandler {
 
         MessageService.ReplyMessage(messageInfo, `Oké, ik stuur je een reminder wanneer ${song.s} van ${song.a} bijna aan de beurt is.`, true, true);
         return;
+    }
+
+    private static async OnList(messageInfo:IMessageInfo) {
+        const currentPosition = Top2KProvider.GetCurrentPosition();
+        const list  = await Top2KProvider.GetTop2KList()
+
+        const detailedSongList = new Array<Top2KSong>();
+
+        for (var i = currentPosition - 1; i >= Math.max(0, currentPosition - 10); i--) {
+            const song = list[i];
+            detailedSongList.push(new Top2KSong(song));
+        }
+
+        MessageService.ReplyEmbed(messageInfo, Top2KEmbeds.GetSongListEmbed(detailedSongList, 'De volgende 10 nummers'));
     }
 }
