@@ -2,7 +2,7 @@ export default class SettingsConstants {
     public static readonly COLORS = {
         BAD:'#ff0000',
         GOOD:'#00ff00',
-        DEFAULT:'#e61e14',
+        DEFAULT:'#696969',
         NEW:'#0669dd',
         UNCHANGED:'#696969',
     }
