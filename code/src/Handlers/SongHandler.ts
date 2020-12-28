@@ -1,6 +1,7 @@
 import Top2KEmbeds from '../Embeds/Top2KEmbeds';
 import IMessageInfo from '../Interfaces/IMessageInfo';
 import Top2KSong from '../Objects/Top2KSong';
+import { Redis } from '../Providers/Redis';
 import Top2KProvider from '../Providers/Top2KProvider';
 import MessageService from '../Services/MessageService';
 
@@ -11,6 +12,9 @@ export default class SongHandler {
             case 'zoek':
             case 'search':
                 this.OnSearchingSong(messageInfo, args[0], args.slice(1).join(' '));
+                break;
+            case 'remind':
+                this.OnRemind(messageInfo, parseInt(args[0]));
                 break;
             default:
                 return false;
@@ -80,5 +84,42 @@ export default class SongHandler {
         }
 
         MessageService.ReplyMessage(messageInfo, '', undefined, true, Top2KEmbeds.GetSongListEmbed(detailedSongList, searchType, searchKey));
+    }
+
+    private static async OnRemind(messageInfo:IMessageInfo, position?:number) {
+        if (position == null) {
+            MessageService.ReplyMessage(messageInfo, 'Geef een geldig getal mee tussen de 1 en de 2000.', false);
+            return;
+        }
+
+        if (position > 2000 || position < 1) {
+            MessageService.ReplyMessage(messageInfo, 'De Top 2000 heeft maar 2000 nummers.', false);
+            return;
+        }
+
+        const list = await Top2KProvider.GetTop2KList();
+        const song = list[position - 1];
+
+        var currentPosition = Top2KProvider.GetCurrentPosition();
+
+        if (currentPosition < position) {
+            MessageService.ReplyMessage(messageInfo, `${song.s} van ${song.a} is al geweest.`, false);
+            return;
+        }
+
+        if (currentPosition == position) {
+            MessageService.ReplyMessage(messageInfo, `${song.s} van ${song.a} wordt momenteel afgespeeld.`);
+            return;
+        }
+
+        if (currentPosition == position + 1) {
+            MessageService.ReplyMessage(messageInfo, `${song.s} van ${song.a} is het volgende nummer.`);
+            return;
+        }
+
+        Redis.hmset(position, messageInfo.member.id, 1);
+
+        MessageService.ReplyMessage(messageInfo, `Oké, ik stuur je een reminder wanneer ${song.s} van ${song.a} bijna aan de beurt is.`, true, true);
+        return;
     }
 }

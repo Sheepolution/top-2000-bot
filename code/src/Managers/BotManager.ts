@@ -8,6 +8,7 @@ import Top2KEmbeds from '../Embeds/Top2KEmbeds';
 import DiscordUtils from '../Utils/DiscordUtils';
 import CommandHandler from '../Handlers/CommandHandler';
 import IMessageInfo from '../Interfaces/IMessageInfo';
+import { Redis } from '../Providers/Redis';
 
 export default class BotManager {
 
@@ -68,5 +69,29 @@ export default class BotManager {
                 MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
             }
         }
+    }
+
+    public static async OnNewSong() {
+        const currentPosition = Top2KProvider.GetCurrentPosition();
+        if (currentPosition == 1) {
+            return;
+        }
+
+        const reminders = await Redis.hgetall(currentPosition - 1)
+        if (reminders == null) {
+            return;
+        }
+
+        const list = await Top2KProvider.GetTop2KList();
+        const nextSong = list[currentPosition - 2];
+
+        var reminderMessage = `Hierna komt ${nextSong.s} van ${nextSong.a}.\n`;
+        for (const id in reminders) {
+            reminderMessage += `<@${id}>, `;
+        }
+
+        reminderMessage = reminderMessage.slice(0, -2);
+
+        MessageService.SendMessageToTop2KChannel(reminderMessage);
     }
 }

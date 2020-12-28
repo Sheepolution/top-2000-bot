@@ -41,6 +41,10 @@ export default class Top2KProvider {
         }
     }
 
+    public static GetCurrentPosition() {
+        return this.currentPosition;
+    }
+
     public static UpdateCurrentPosition(songData: any) {
         const currentPosition = this.list.indexOf(songData);
         if (this.currentPosition != -1) {
