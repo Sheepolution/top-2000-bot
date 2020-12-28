@@ -1,7 +1,7 @@
 {
-  "name": "robot-trip",
+  "name": "robot-stenders",
   "version": "1.0.0",
-  "description": "A Discord bot for posting NOS Liveblog posts.",
+  "description": "A bot for posting the currently playing Top 2000 song in Discord",
   "main": "lib/index.js",
   "scripts": {
     "start": "ts-node-dev --respawn src/Index.ts",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sheepolution/robot-trip.git"
+    "url": "git+https://github.com/Sheepolution/robot-stenders.git"
   },
   "author": "Sheepolution",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Sheepolution/robot-trip/issues"
+    "url": "https://github.com/Sheepolution/robot-stenders/issues"
   },
-  "homepage": "https://github.com/Sheepolution/robot-trip#readme",
+  "homepage": "https://github.com/Sheepolution/robot-stenders#readme",
   "dependencies": {
     "@types/pg": "^7.14.5",
     "@types/ws": "^7.2.6",
