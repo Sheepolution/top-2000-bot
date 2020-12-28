@@ -43,8 +43,6 @@ export default class Top2KProvider {
 
         this.currentPresenterId = presenter.id;
 
-        presenter.image = broadcast.image;
-
         return presenter
     }
 

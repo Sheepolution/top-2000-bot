@@ -76,7 +76,6 @@ export default class BotManager {
             const member = guild.members.cache.get(SettingsConstants.BOT_ID);
             if (member != null) {
                 await DiscordService.SetNickname(member, newPresenter.name);
-                await DiscordService.SetAvatar(newPresenter.image);
             }
         }
     }
