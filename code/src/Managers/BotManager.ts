@@ -64,6 +64,7 @@ export default class BotManager {
             const song = Top2KProvider.GetSongObject();
             if (song != null) {
                 MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
+                this.OnNewSong();
             }
         }
     }
