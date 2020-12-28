@@ -57,10 +57,12 @@ export default class SongHandler {
                 const position = parseInt(searchKey);
                 if (position == null) {
                     MessageService.ReplyMessage(messageInfo, `${searchKey} is geen geldig getal.`, false, true);
+                    return;
                 }
 
                 if (position > 2000 || position < 1) {
                     MessageService.ReplyMessage(messageInfo, 'De Top 2000 heeft maar 2000 nummers.', false, true);
+                    return;
                 }
 
                 songs = [list[position - 1]];
