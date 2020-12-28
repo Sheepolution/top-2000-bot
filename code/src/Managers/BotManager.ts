@@ -9,6 +9,7 @@ import DiscordUtils from '../Utils/DiscordUtils';
 import CommandHandler from '../Handlers/CommandHandler';
 import IMessageInfo from '../Interfaces/IMessageInfo';
 import { Redis } from '../Providers/Redis';
+import RedisConstants from '../Constants/RedisConstants';
 
 export default class BotManager {
 
@@ -85,7 +86,7 @@ export default class BotManager {
             return;
         }
 
-        const reminders = await Redis.hgetall(currentPosition - 1)
+        const reminders = await Redis.hgetall(RedisConstants.REDIS_KEY + RedisConstants.REMINDER_KEY + (currentPosition - 1))
         if (reminders == null) {
             return;
         }

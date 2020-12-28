@@ -1,3 +1,4 @@
+import RedisConstants from '../Constants/RedisConstants';
 import Top2KEmbeds from '../Embeds/Top2KEmbeds';
 import IMessageInfo from '../Interfaces/IMessageInfo';
 import Top2KSong from '../Objects/Top2KSong';
@@ -119,7 +120,7 @@ export default class SongHandler {
             return;
         }
 
-        Redis.hmset(position, messageInfo.member.id, 1);
+        Redis.hmset(RedisConstants.REDIS_KEY + RedisConstants.REMINDER_KEY + position, messageInfo.member.id, 1);
 
         MessageService.ReplyMessage(messageInfo, `Oké, ik stuur je een reminder wanneer ${song.s} van ${song.a} bijna aan de beurt is.`, true, true);
         return;
