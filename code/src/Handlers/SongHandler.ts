@@ -85,6 +85,7 @@ export default class SongHandler {
             case 'plaats':
             case 'positie':
             case 'position':
+            case 'plek':
             case 'getal':
                 // eslint-disable-next-line no-case-declarations
                 const position = parseInt(lowerSearchKey);
