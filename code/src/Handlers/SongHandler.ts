@@ -46,7 +46,7 @@ export default class SongHandler {
 
         const detailedSongList = await this.GetSongList(obj.values.position);
 
-        obj.message.edit({embeds: [Top2KEmbeds.GetSongListEmbed(detailedSongList, 'Playlist')]});
+        obj.message.edit({embeds: [Top2KEmbeds.GetSongListEmbed(detailedSongList, 'Lijst')]});
     }
 
     private static async OnSearchingSong(messageInfo: IMessageInfo, searchType: string, searchKey: string) {
@@ -185,7 +185,7 @@ export default class SongHandler {
     }
 
     private static async OnList(messageInfo: IMessageInfo) {
-        const currentPosition = Top2KProvider.GetCurrentPosition() ?? 1000;
+        const currentPosition = Top2KProvider.GetCurrentPosition() ?? 2000;
 
         const detailedSongList = await this.GetSongList(currentPosition);
 
@@ -200,7 +200,7 @@ export default class SongHandler {
                     .setLabel('➡️')
                     .setStyle('SECONDARY'));
 
-        const message = await MessageService.ReplyEmbed(messageInfo, Top2KEmbeds.GetSongListEmbed(detailedSongList, 'Playlist'), null, [actionRow]);
+        const message = await MessageService.ReplyEmbed(messageInfo, Top2KEmbeds.GetSongListEmbed(detailedSongList, 'Lijst'), null, [actionRow]);
         ButtonManager.AddMessage(<Message>message, ButtonMessageType.SongList, messageInfo, {position: currentPosition});
         LogService.Log(LogType.CommandList);
     }
