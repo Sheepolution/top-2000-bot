@@ -1,10 +1,9 @@
 /* eslint-disable no-inner-declarations */
 const uuidv4 = require('uuid/v4');
-export const perfy = require('perfy');
 
 export module Utils {
 
-    export function Is(a:any, ...b:any) {
+    export function Is(a: any, ...b: any) {
         for (const n of b) {
             if (a == n) {
                 return true;
@@ -14,7 +13,7 @@ export module Utils {
     }
 
     // Inclusive when floor = true
-    export function Random(a?:number, b?:number, floor?:boolean) {
+    export function Random(a?: number, b?: number, floor?: boolean) {
         if (a == null) { a = 0; b = 1; }
         if (b == null) { b = 0; }
 
@@ -26,11 +25,11 @@ export module Utils {
         return Math.random() >= .5;
     }
 
-    export function Chance(n:number) {
+    export function Chance(n: number) {
         return Utils.Random(0, 100) <= n;
     }
 
-    export function Dice(n:number) {
+    export function Dice(n: number) {
         return Utils.Random(1, n, true);
     }
 
@@ -47,12 +46,21 @@ export module Utils {
         return Utils.GetNow().toISOString();
     }
 
+    export function GetDateAsUserFriendlyString(date: Date) {
+        if (date == null || date.toISOString == null) {
+            return null;
+        }
+
+        const isoString = date.toISOString();
+        return isoString.replace('T', ' ').slice(0, -5);
+    }
+
     // Boolean to bit - true = 1, false = 0
-    export function Bit(bool:boolean) {
+    export function Bit(bool: boolean) {
         return bool ? 1 : 0;
     }
 
-    export function Bool(int:number) {
+    export function Bool(int: number) {
         return int != 0;
     }
 
@@ -60,32 +68,32 @@ export module Utils {
         return uuidv4();
     }
 
-    export function ObjectToArray(obj:any) {
-        var arr = [];
+    export function ObjectToArray(obj: any) {
+        const arr = [];
         for (const key in obj) {
-            arr.push(key)
-            arr.push(obj[key])
+            arr.push(key);
+            arr.push(obj[key]);
         }
         return arr;
     }
 
-    export function ArrayToObject(arr:Array<any>) {
-        var obj:any = {};
+    export function ArrayToObject(arr: Array<any>) {
+        const obj: any = {};
         for (let i = 0; i < arr.length; i+=2) {
             obj[arr[i]] = arr[i+1];
         }
         return obj;
     }
 
-    export function GetSecondsInMilliseconds(n:number) {
+    export function GetSecondsInMilliseconds(n: number) {
         return n * 1000;
     }
 
-    export function GetSecondsInMinutes(n:number) {
+    export function GetSecondsInMinutes(n: number) {
         return Math.ceil(n/60);
     }
 
-    export function GetSecondsInMinutesAndSeconds(n:number) {
+    export function GetSecondsInMinutesAndSeconds(n: number) {
         const f = Math.floor(n/60);
         const minutes = f > 0 ? (`${f} ${f == 1 ? 'minuut' : 'minuten'}`) : null;
         if (minutes == null) {
@@ -95,24 +103,24 @@ export module Utils {
         return `${f} ${f == 1 ? 'minuut' : 'minuten'}${(n/60 != f) ? ` en ${(n - (f)*60)} seconden` : ''}`;
     }
 
-    export function GetMinutesInSeconds(n:number) {
+    export function GetMinutesInSeconds(n: number) {
         return n * 60;
     }
 
-    export function GetHoursInSeconds(n:number) {
-        return n * 60 * 60
+    export function GetHoursInSeconds(n: number) {
+        return n * 60 * 60;
     }
 
-    export function GetMinutesInMilliseconds(n:number) {
+    export function GetMinutesInMilliseconds(n: number) {
         return n * 60 * 1000;
     }
 
-    export function ParseHour(hour:string) {
+    export function ParseHour(hour: string) {
         const match = hour.match(/^(\d{1,2})(:\d{2}|\s?[pPaA][mM])?$/);
         if (match == null) {
             return null;
         } else {
-            var time = parseInt(match[1]);
+            let time = parseInt(match[1]);
             if (time > 24) {
                 return null;
             }
@@ -139,7 +147,7 @@ export module Utils {
         }
     }
 
-    export async function Sleep(seconds:number) {
+    export async function Sleep(seconds: number) {
         return new Promise( resolve => setTimeout(resolve, seconds * 1000) );
     }
 }

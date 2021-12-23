@@ -1,11 +1,13 @@
-import { Channel, Client, Guild, GuildMember, MessageEmbed, TextChannel } from 'discord.js';
+import { Channel, Client, Guild, GuildChannelResolvable, GuildMember, MessagePayload, PermissionResolvable, Snowflake, TextChannel, User } from 'discord.js';
+import IMessageInfo from '../Interfaces/IMessageInfo';
 import DiscordUtils from '../Utils/DiscordUtils';
+import MessageService from './MessageService';
 
 export default class DiscordService {
 
-    private static client:Client;
+    private static client: Client;
 
-    public static SetClient(client:Client) {
+    public static SetClient(client: Client) {
         if (this.client != null) {
             throw new Error('Client can only be set once.');
         }
@@ -13,9 +15,11 @@ export default class DiscordService {
         this.client = client;
     }
 
-    public static async FindMember(searchKey:string, guild:Guild) {
-        // TODO: Research how fetching with query works. Does it work for both displayName and username?
-        // For now we just fetch all.
+    public static async FindBotMember(guild: Guild) {
+        return await DiscordService.FindMemberById(this.client.user.id, guild);
+    }
+
+    public static async FindMember(searchKey: string, guild: Guild) {
         const foundMember = await this.FindMemberById(searchKey, guild);
         if (foundMember) {
             return foundMember;
@@ -29,7 +33,7 @@ export default class DiscordService {
         });
     }
 
-    public static async FindMemberById(searchKey:string, guild:Guild) {
+    public static async FindMemberById(searchKey: string, guild: Guild) {
         const id = DiscordUtils.GetMemberId(searchKey);
         if (id) {
             const foundMember = guild.members.cache.get(id) || guild.members.fetch(id);
@@ -39,8 +43,8 @@ export default class DiscordService {
         }
     }
 
-    public static FindChannel(channelId:string, guild?:Guild) {
-        var channel = this.FindChannelById(channelId, guild);
+    public static FindChannel(channelId: string, guild?: Guild) {
+        const channel = this.FindChannelById(channelId, guild);
 
         if (channel == null && guild != null) {
             // Guild has already been fetched in FindChannelById
@@ -49,10 +53,10 @@ export default class DiscordService {
         return undefined;
     }
 
-    public static async FindChannelById(searchKey:string, guild?:Guild) {
+    public static async FindChannelById(searchKey: string, guild?: Guild) {
         const id = DiscordUtils.GetChannelId(searchKey);
         if (id) {
-            var foundChannel;
+            let foundChannel;
             if (guild) {
                 foundChannel = guild.channels.cache.get(id);
                 if (!foundChannel) {
@@ -69,47 +73,60 @@ export default class DiscordService {
         }
     }
 
-    public static async FindMessageById(messageId:string, channel:TextChannel) {
+    public static async FindMessageById(messageId: string, channel: TextChannel) {
         return await channel.messages.fetch(messageId);
     }
 
-    public static async FindUserById(userId:string) {
+    public static async FindUserById(userId: string) {
         return this.client.users.cache.get(userId) || await this.client.users.fetch(userId);
     }
 
-    public static FindGuild(guildId:string) {
-        return this.client.guilds.cache.get(guildId);
+    public static async FindGuildById(guildId: string) {
+        return await this.client.guilds.fetch(guildId as Snowflake);
     }
 
-    public static IsMemberAdmin(member:GuildMember) {
-        return member.hasPermission('ADMINISTRATOR');
+    public static IsMemberAdmin(member: GuildMember) {
+        return member.permissions.has('ADMINISTRATOR');
     }
 
-    public static async SendEmbed(channel:Channel, embed:MessageEmbed, content?:string) {
-        const textChannel:TextChannel = <TextChannel>channel;
-        return await (content ? textChannel.send(content, embed) : textChannel.send(embed))
-    }
-
-    public static async SendMessage(channel:TextChannel, message:string, embed?:MessageEmbed) {
-        const textChannel:TextChannel = <TextChannel>channel;
-        if (embed) {
-            return await this.SendEmbed(textChannel, embed, message)
+    public static async CheckPermission(messageInfo: IMessageInfo, permission: PermissionResolvable, action?: string, sendMessage: boolean = true) {
+        if (messageInfo.guild == null) {
+            return;
         }
 
-        return await textChannel.send(message);
-    }
-
-    public static async ReplyMessage(textChannel:TextChannel, member:GuildMember, message:string, embed?:MessageEmbed) {
-        const reply = `<@${member.user}> ${message}`;
-
-        if (embed) {
-            return await this.SendEmbed(textChannel, embed, reply)
+        const botMember = await DiscordService.FindBotMember(messageInfo.guild);
+        const permissions = botMember.permissionsIn(messageInfo.channel as GuildChannelResolvable);
+        if (permissions.has(permission)) {
+            return true;
         }
 
-        return await textChannel.send(reply);
+        if (sendMessage) {
+            MessageService.ReplyMessage(messageInfo, `I don't have permission to ${DiscordUtils.GetUserFriendlyPermissionText(permission)}${action?.isFilled() ? `, so I can't ${action}.` : '.'}`, false);
+        }
+
+        return false;
     }
 
-    public static async SetAvatar(imageUrl: string) {
+    public static async SendMessage(channel: Channel, data: MessagePayload) {
+        try {
+            const textChannel: TextChannel = <TextChannel>channel;
+            return await textChannel.send(data);
+        } catch (error) {
+            // Was not able to send message.
+        }
+    }
+
+    public static async ReplyMessage(textChannel: TextChannel, user: User, data: any) {
+        try {
+            data.content = `${user} ${data.content || ''}`;
+
+            return await textChannel.send(data);
+        } catch (error) {
+            // Was not able to send message.
+        }
+    }
+
+    public static SetAvatar(imageUrl: string) {
         this.client.user?.setAvatar(imageUrl);
     }
 

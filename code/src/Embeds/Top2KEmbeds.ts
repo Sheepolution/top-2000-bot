@@ -2,10 +2,11 @@ import SettingsConstants from '../Constants/SettingsConstants';
 import { MessageEmbed } from 'discord.js';
 import Top2KSong from '../Objects/Top2KSong';
 import Top2KConstants from '../Constants/Top2KConstants';
+import Top2KProvider from '../Providers/Top2KProvider';
 
 export default class Top2KEmbeds {
 
-    public static GetSongEmbed(song:Top2KSong) {
+    public static GetSongEmbed(song: Top2KSong) {
         const change = song.GetChange();
         const absChange = Math.abs(change || 0);
 
@@ -14,18 +15,35 @@ export default class Top2KEmbeds {
             .setAuthor(song.GetArtist(), Top2KConstants.ICONS.NPO2, song.GetPageUrl())
             .setTitle(song.GetTitle())
             .setThumbnail(song.GetImageUrl())
-            .setDescription(`[Luister fragment](${song.GetAudioUrl()})`)
-            .setFooter(`${song.GetCurrentPosition()} | ${change == null ? 'Nieuw!' : (change == 0 ? 'Onveranderd' : `${absChange} plaats${change == 1 ? '' : 'en'} ${change > 0 ? 'gestegen' : 'gedaald'}`)}`);
+            .setFooter(`#${song.GetCurrentPosition()} ${change == null ? '🔷 Nieuw!' : (change == 0 ? '🔘 Onveranderd' : `${change > 0 ? '🔺' : '🔻'} ${absChange} plaats${absChange == 1 ? '' : 'en'} ${change > 0 ? 'gestegen' : 'gedaald'}`)}`);
+
+        let description = '';
+
+        const statsUrl = song.GetStatsUrl();
+        if (statsUrl != null) {
+            description = `📈 [Statistieken](${statsUrl})\n`;
+        }
+
+        const audioUrl = song.GetAudioUrl();
+        if (audioUrl != null) {
+            description += `🎵 [Luister fragment](${audioUrl})`;
+        }
+
+        if (description.isFilled()) {
+            embed.setDescription(description);
+        }
 
         return embed;
     }
 
-    public static GetSongListEmbed(songList:Array<Top2KSong>, title:string) {
+    public static GetSongListEmbed(songList: Array<Top2KSong>, title: string) {
 
-        var songListString = '';
+        let songListString = '';
+        const currentPosition = Top2KProvider.GetCurrentPosition();
 
         for (const song of songList) {
-            const addition = `#${song.GetCurrentPosition()} ${song.GetTitle()} - ${song.GetArtist()}\n`;
+            const nowPlaying = song.GetCurrentPosition() == currentPosition;
+            const addition = `\`#${song.GetCurrentPosition()}\` ${nowPlaying ? '**' : ''}${song.GetTitle()} - ${song.GetArtist()}${nowPlaying ? '**' : ''}\n`;
             if (songListString.length + addition.length > 2048) {
                 break;
             }

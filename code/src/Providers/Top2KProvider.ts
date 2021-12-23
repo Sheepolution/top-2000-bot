@@ -1,7 +1,7 @@
 import Top2KConstants from '../Constants/Top2KConstants';
 import Top2KSong from '../Objects/Top2KSong';
 
-var fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 export default class Top2KProvider {
 
@@ -12,7 +12,7 @@ export default class Top2KProvider {
 
     public static async GetTop2KList() {
         if (this.list.length == 0) {
-            this.list = await this.GetTopListJSON();
+            this.list = (await this.GetTopListJSON()).positions;
         }
 
         return this.list;
@@ -20,22 +20,28 @@ export default class Top2KProvider {
 
     public static async GetNewCurrentSong() {
         const song = await this.GetCurrentSongJSON();
-        if (this.currentSongId != null && (this.currentSongId == song.id || this.currentSongId == song.title + song.artist)) {
+        if (song?.data?.radio_track_plays?.data == null) {
             return;
         }
 
-        this.currentSongId = song.id;
-
-        if (this.currentSongId == '') {
-            this.currentSongId = song.title + song.artist;
+        if (song.data.radio_track_plays.data.length == 0) {
+            return;
         }
+
+        const songId = song.data.radio_track_plays.data[0].radio_tracks?.id;
+
+        if (this.currentSongId == songId) {
+            return;
+        }
+
+        this.currentSongId  = songId;
 
         return song;
     }
 
     public static async GetNewCurrentPresenter() {
         const broadcast = await this.GetCurrentBroadcastJSON();
-        const presenter = broadcast.presenters[0];
+        const presenter = broadcast.data[0].presenters;
 
         if (this.currentPresenterId != null && this.currentSongId == presenter.id) {
             return;
@@ -43,7 +49,7 @@ export default class Top2KProvider {
 
         this.currentPresenterId = presenter.id;
 
-        return presenter
+        return presenter;
     }
 
     public static GetSongObject() {
@@ -67,28 +73,29 @@ export default class Top2KProvider {
     }
 
     private static GetSongData() {
-        var songData = this.list.find((s: any) => s.aid == this.currentSongId || s.s + s.a == this.currentSongId);
+        let songData = this.list.find((s: any) => s.id == this.currentSongId);
         if (songData == null) {
             songData = this.list[this.currentPosition - 2];
         }
+
         return songData;
     }
 
     private static async GetTopListJSON() {
-        return await this.GetJSON(`${Top2KConstants.BASE_URL}/?option=com_ajax&plugin=Top2000&format=json&year=2020`);
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/chart/positions?editionSlug=top-2000-van-2021-12-25`);
     }
 
     private static async GetCurrentSongJSON() {
-        return await this.GetJSON(`${Top2KConstants.BASE_URL}/?option=com_ajax&plugin=nowplaying&format=json&channel=nporadio2`);
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/miniplayer/liveTrack?channel=npo-radio-2`);
     }
 
     private static async GetCurrentBroadcastJSON() {
-        return await this.GetJSON(`${Top2KConstants.BASE_URL}/?option=com_ajax&plugin=currentbroadcast&type=guide&format=json&channel=nporadio2`);
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/broadcasts`);
     }
 
     private static async GetJSON(url: string) {
-        var response = await fetch(url);
-        var json = await response.json();
-        return json.data[0];
+        const response = await fetch(url);
+        const json = await response.json();
+        return json;
     }
 }

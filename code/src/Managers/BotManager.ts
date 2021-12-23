@@ -1,7 +1,7 @@
 import DiscordService from '../Services/DiscordService';
 import MessageService from '../Services/MessageService';
 import SettingsConstants from '../Constants/SettingsConstants';
-import { Message, TextChannel } from 'discord.js';
+import { ButtonInteraction, Message, TextChannel } from 'discord.js';
 import { Utils } from '../Utils/Utils';
 import Top2KProvider from '../Providers/Top2KProvider';
 import Top2KEmbeds from '../Embeds/Top2KEmbeds';
@@ -10,43 +10,40 @@ import CommandHandler from '../Handlers/CommandHandler';
 import IMessageInfo from '../Interfaces/IMessageInfo';
 import { Redis } from '../Providers/Redis';
 import RedisConstants from '../Constants/RedisConstants';
+import ButtonManager from './ButtonManager';
+import LogService from '../Services/LogService';
+import { LogType } from '../Enums/LogType';
 
 export default class BotManager {
 
-    private static top2KChannel:TextChannel;
+    private static top2KChannel: TextChannel;
 
     public static async OnReady() {
-        console.log('Robot Stenders: Connected');
+        console.log('Top 2000: Connected');
         BotManager.top2KChannel = <TextChannel> await DiscordService.FindChannelById(SettingsConstants.TOP_2K_CHANNEL_ID);
 
         await Top2KProvider.GetTop2KList();
 
-        // Prevent from current song being sent twice on restart
+        // Prevent current song being sent twice on restart
         await Top2KProvider.GetNewCurrentSong();
         await Top2KProvider.GetNewCurrentPresenter();
 
         setInterval(() => {
-            BotManager.SendTop2KUpdates();
-        }, Utils.GetSecondsInMilliseconds(15))
+            const time = new Date().getTime();
 
-        setInterval(() => {
-            BotManager.UpdatePresenter();
-        }, Utils.GetMinutesInMilliseconds(1))
+            if (time < 1640386800 || time > 1640991600) {
+                return;
+            }
+
+            BotManager.SendTop2KUpdates();
+        }, Utils.GetSecondsInMilliseconds(15));
     }
 
-    public static async OnMessage(message:Message) {
-        if (message.guild == null) {
-            return;
-        }
+    public static async OnMessage(message: Message) {
+        const messageInfo: IMessageInfo = DiscordUtils.ParseMessageToInfo(message, message.author);
 
-        if (message.member == null) {
-            return;
-        }
-
-        const messageInfo:IMessageInfo = DiscordUtils.ParseMessageToInfo(message, message.member);
-
-        var content = message.content.trim();
-        var prefix = SettingsConstants.PREFIX;
+        const content = message.content.trim();
+        const prefix = SettingsConstants.PREFIX;
 
         if (content.startsWith(prefix)) {
             await CommandHandler.OnCommand(messageInfo, content);
@@ -62,8 +59,10 @@ export default class BotManager {
         if (newSong != null) {
             const song = Top2KProvider.GetSongObject();
             if (song != null) {
-                MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
+                const message = await MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
                 this.OnNewSong();
+                await Utils.Sleep(5);
+                await message.crosspost();
             }
         }
     }
@@ -85,7 +84,7 @@ export default class BotManager {
             return;
         }
 
-        const reminders = await Redis.hgetall(RedisConstants.REDIS_KEY + RedisConstants.REMINDER_KEY + (currentPosition - 1))
+        const reminders = await Redis.hgetall(RedisConstants.REDIS_KEY + RedisConstants.REMINDER_KEY + (currentPosition - 1));
         if (reminders == null) {
             return;
         }
@@ -93,13 +92,27 @@ export default class BotManager {
         const list = await Top2KProvider.GetTop2KList();
         const nextSong = list[currentPosition - 2];
 
-        var reminderMessage = `Hierna komt ${nextSong.s} van ${nextSong.a}.\n`;
+        const reminderMessage = `Zometeen komt **${nextSong.title}** van **${nextSong.artist}**.\n`;
         for (const id in reminders) {
-            reminderMessage += `<@${id}>, `;
+            MessageService.SendMessageToDMById(id, reminderMessage);
         }
+    }
 
-        reminderMessage = reminderMessage.slice(0, -2);
+    public static async OnInteractionCommand(interaction: ButtonInteraction) {
+        const messageInfo: IMessageInfo = await DiscordUtils.ParseInteractionToInfo(interaction);
+        CommandHandler.OnCommand(messageInfo, '');
+    }
 
-        MessageService.SendMessageToTop2KChannel(reminderMessage);
+    public static OnInteractionButton(interaction: ButtonInteraction) {
+        ButtonManager.OnClick(<Message>interaction.message, interaction.customId, interaction.user);
+        interaction.deferUpdate();
+    }
+
+    public static OnAddedToGuild() {
+        LogService.Log(LogType.GuildJoined);
+    }
+
+    public static OnKickedFromGuild() {
+        LogService.Log(LogType.GuildLeft);
     }
 }

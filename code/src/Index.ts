@@ -9,6 +9,10 @@ class Main {
     constructor() {
         Discord.SetEventReadyCallback(BotManager.OnReady);
         Discord.SetEventMessageCallback(BotManager.OnMessage);
+        Discord.SetEventGuildCreateCallback(BotManager.OnAddedToGuild);
+        Discord.SetEventGuildDeleteCallback(BotManager.OnKickedFromGuild);
+        Discord.SetEventInteractionCommandCallback(BotManager.OnInteractionCommand);
+        Discord.SetEventInteractionButtonCallback(BotManager.OnInteractionButton);
         Discord.Init();
     }
 }

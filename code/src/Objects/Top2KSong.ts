@@ -5,25 +5,25 @@ export default class Top2KSong {
     private id: string;
     private title: string;
     private artist: string;
-    private year: string;
     private currentPosition: number;
     private previousPosition: number;
     private change?: number;
     private imageUrl: string;
     private pageUrl: string;
     private audioUrl: string;
+    private statsUrl: string;
 
-    constructor(data:any) {
-        this.id = data.aid;
-        this.title = data.s;
-        this.artist = data.a;
-        this.year = data.yr;
-        this.currentPosition = data.pos;
-        this.previousPosition = data.prv;
+    constructor(data: any) {
+        this.id = data.id;
+        this.title = data.title;
+        this.artist = data.artist;
+        this.currentPosition = data.position;
+        this.previousPosition = data.lastPosition;
         this.change = this.previousPosition == 0 ? undefined : this.previousPosition - this.currentPosition;
-        this.imageUrl = data.img;
-        this.pageUrl = `${Top2KConstants.BASE_URL}${data.url}`;
-        this.audioUrl = data.aud;
+        this.imageUrl = data.imageUrl;
+        this.pageUrl = `${Top2KConstants.BASE_URL}/muziek/nummers/${this.id}/${this.title.replaceAll(' ', '-')}`;
+        this.audioUrl = data.trackPreviewUrl;
+        this.statsUrl = data.trackHistoryUrl?.isFilled() ? Top2KConstants.BASE_URL + data.trackHistoryUrl : null;
     }
 
     public GetId() {
@@ -36,10 +36,6 @@ export default class Top2KSong {
 
     public GetArtist() {
         return this.artist;
-    }
-
-    public GetYear() {
-        return this.year;
     }
 
     public GetCurrentPosition() {
@@ -64,5 +60,9 @@ export default class Top2KSong {
 
     public GetAudioUrl() {
         return this.audioUrl;
+    }
+
+    public GetStatsUrl() {
+        return this.statsUrl;
     }
 }

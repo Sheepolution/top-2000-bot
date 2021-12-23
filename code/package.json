@@ -18,29 +18,24 @@
   },
   "homepage": "https://github.com/Sheepolution/robot-stenders#readme",
   "dependencies": {
-    "@types/pg": "^7.14.5",
-    "@types/ws": "^7.2.6",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
-    "async-redis": "^1.1.7",
-    "discord.js": "^12.3.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^6.8.0",
-    "jquery": "^3.5.1",
-    "jsdom": "^16.4.0",
-    "knex": "^0.19.5",
-    "node-fetch": "^2.6.1",
-    "objection": "^1.6.11",
-    "perfy": "^1.1.5",
-    "pg": "^7.18.2",
-    "redis": "^2.8.0",
-    "ts-node": "^8.10.2",
-    "ts-node-dev": "^1.0.0-pre.63",
-    "uuid": "^3.4.0",
-    "xhr": "^2.5.0"
+    "@types/node": "^16.11.6",
+    "@types/pg": "^8.6.1",
+    "@types/ws": "^8.2.0",
+    "async-redis": "^2.0.0",
+    "discord.js": "^13.3.1",
+    "dotenv": "^10.0.0",
+    "object-sizeof": "^1.6.1",
+    "objection": "^2.2.17",
+    "pg": "^8.7.1",
+    "simple-encryptor": "^4.0.0",
+    "ts-node": "^10.4.0",
+    "ts-node-dev": "^1.1.8",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
-    "@types/node": "^12.12.62",
-    "typescript": "^4.0.3"
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "eslint": "^8.1.0",
+    "typescript": "^4.4.4"
   }
 }
