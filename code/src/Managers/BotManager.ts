@@ -58,10 +58,10 @@ export default class BotManager {
         if (newSong != null) {
             const song = Top2KProvider.GetSongObject();
             if (song != null) {
-                await MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
+                const message = await MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
                 this.OnNewSong();
                 await Utils.Sleep(5);
-                // await message.crosspost();
+                message.crosspost();
             }
         }
     }
