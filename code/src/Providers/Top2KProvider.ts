@@ -9,6 +9,7 @@ export default class Top2KProvider {
     private static currentPosition: number = -1;
     private static currentPresenterId: string;
     private static list: Array<any> = new Array<any>();
+    private static seen: Array<string> = new Array<string>();
 
     public static async GetTop2KList() {
         if (this.list.length == 0) {
@@ -45,7 +46,13 @@ export default class Top2KProvider {
             return;
         }
 
+        if (this.seen.includes(songId)) {
+            return;
+        }
+
         this.currentSongId  = songId;
+
+        this.seen.push(this.currentSongId);
 
         return song;
     }
