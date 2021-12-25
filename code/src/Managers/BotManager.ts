@@ -30,8 +30,7 @@ export default class BotManager {
 
         setInterval(() => {
             const time = new Date().getTime();
-
-            if (time < 1640386800 || time > 1640991600) {
+            if (time < 1640386800000 || time > 1640991600000) {
                 return;
             }
 
@@ -59,10 +58,10 @@ export default class BotManager {
         if (newSong != null) {
             const song = Top2KProvider.GetSongObject();
             if (song != null) {
-                const message = await MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
+                await MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
                 this.OnNewSong();
                 await Utils.Sleep(5);
-                await message.crosspost();
+                // await message.crosspost();
             }
         }
     }

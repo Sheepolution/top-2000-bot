@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 export default class Top2KProvider {
 
     private static currentSongId: string;
-    private static currentPosition: number;
+    private static currentPosition: number = -1;
     private static currentPresenterId: string;
     private static list: Array<any> = new Array<any>();
 
@@ -28,7 +28,18 @@ export default class Top2KProvider {
             return;
         }
 
-        const songId = song.data.radio_track_plays.data[0].radio_tracks?.id;
+        const songData = song.data.radio_track_plays.data[0].radio_tracks;
+
+        let songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
+
+        if (songInList == null) {
+            if (this.currentPosition > 1) {
+                songInList = this.list[this.currentPosition - 2];
+            }
+            return;
+        }
+
+        const songId = songInList.id;
 
         if (this.currentSongId == songId) {
             return;
@@ -86,7 +97,7 @@ export default class Top2KProvider {
     }
 
     private static async GetCurrentSongJSON() {
-        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/miniplayer/liveTrack?channel=npo-radio-2`);
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/miniplayer/info?channel=npo-radio-2`);
     }
 
     private static async GetCurrentBroadcastJSON() {
