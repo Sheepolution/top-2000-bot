@@ -31,13 +31,18 @@ export default class Top2KProvider {
 
         const songData = song.data.radio_track_plays.data[0].radio_tracks;
 
+        if (songData == null) {
+            return;
+        }
+
         let songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
 
         if (songInList == null) {
             if (this.currentPosition > 1) {
                 songInList = this.list[this.currentPosition - 2];
+            } else {
+                return;
             }
-            return;
         }
 
         const songId = songInList.id;
