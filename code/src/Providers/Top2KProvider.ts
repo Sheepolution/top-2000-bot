@@ -59,6 +59,8 @@ export default class Top2KProvider {
 
         this.seen.push(this.currentSongId);
 
+        this.UpdateCurrentPosition(songInList);
+
         return song;
     }
 
@@ -89,7 +91,7 @@ export default class Top2KProvider {
     }
 
     public static UpdateCurrentPosition(songData: any) {
-        const currentPosition = this.list.indexOf((s: any) => s.id == songData.id);
+        const currentPosition = this.list.findIndex((s: any) => s.id == songData.id);
         if (currentPosition != -1) {
             this.currentPosition = <number> currentPosition + 1;
         }
