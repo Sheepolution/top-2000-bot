@@ -90,7 +90,7 @@ export default class Top2KProvider {
 
     public static UpdateCurrentPosition(songData: any) {
         const currentPosition = this.list.indexOf(songData);
-        if (this.currentPosition != -1) {
+        if (currentPosition != -1) {
             this.currentPosition = <number> currentPosition + 1;
         }
     }
