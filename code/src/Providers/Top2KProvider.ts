@@ -57,6 +57,9 @@ export default class Top2KProvider {
             }
 
             songInList = this.list.find((s: any) => s.id == songData.id);
+            if (songInList == null) {
+                return;
+            }
         }
 
         const songId = songInList.id;
