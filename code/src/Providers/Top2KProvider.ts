@@ -38,7 +38,7 @@ export default class Top2KProvider {
             return;
         }
 
-        let songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
+        let songInList = this.list.find((s: any) => s.title == songData.song && s.artist == songData.artist);
 
         if (songInList == null) {
             const song = await this.GetCurrentSongJSON2();
