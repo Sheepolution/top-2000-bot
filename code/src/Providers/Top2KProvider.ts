@@ -29,7 +29,10 @@ export default class Top2KProvider {
             return;
         }
 
-        let songData = song.data.radio_track_plays.data[0].radio_tracks;
+        let songData = song.data.radio_track_plays.data[0];
+        if (songData.radioTracks != null) {
+            songData = songData.radioTracks;
+        }
 
         if (songData == null) {
             return;
