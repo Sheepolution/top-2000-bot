@@ -29,23 +29,36 @@ export default class Top2KProvider {
             return;
         }
 
-        const songData = song.data.radio_track_plays.data[0].radio_tracks;
+        let songData = song.data.radio_track_plays.data[0].radio_tracks;
 
         if (songData == null) {
             return;
         }
 
-        let songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
+        const songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
+
+        let songId;
 
         if (songInList == null) {
-            if (this.currentPosition > 1) {
-                songInList = this.list[this.currentPosition - 2];
-            } else {
+            const song = await this.GetCurrentSongJSON2();
+            if (song?.data?.radio_track_plays?.data == null) {
                 return;
             }
-        }
 
-        const songId = songInList.id;
+            if (song.data.radio_track_plays.data.length == 0) {
+                return;
+            }
+
+            songData = song.data.radio_track_plays.data[0].radio_tracks;
+
+            if (songData == null) {
+                return;
+            }
+
+            songId = songData.id;
+        } else {
+            songId = songInList.id;
+        }
 
         if (this.currentSongId == songId) {
             return;
@@ -112,6 +125,10 @@ export default class Top2KProvider {
 
     private static async GetCurrentSongJSON() {
         return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/miniplayer/info?channel=npo-radio-2`);
+    }
+
+    private static async GetCurrentSongJSON2() {
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/miniplayer/liveTrack?channel=npo-radio-2`);
     }
 
     private static async GetCurrentBroadcastJSON() {
