@@ -38,9 +38,7 @@ export default class Top2KProvider {
             return;
         }
 
-        const songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
-
-        let songId;
+        let songInList = this.list.find((s: any) => s.title == songData.name && s.artist == songData.artist);
 
         if (songInList == null) {
             const song = await this.GetCurrentSongJSON2();
@@ -58,10 +56,10 @@ export default class Top2KProvider {
                 return;
             }
 
-            songId = songData.id;
-        } else {
-            songId = songInList.id;
+            songInList = this.list.find((s: any) => s.id == songData.id);
         }
+
+        const songId = songInList.id;
 
         if (this.currentSongId == songId) {
             return;
