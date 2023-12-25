@@ -72,7 +72,7 @@ export default class SongHandler {
             case 'name':
             case 'nummer':
             case 'lied':
-                songs = list.filter(s => s.title.toLowerCase().includes(lowerSearchKey));
+                songs = list.filter(s => s.track.title.toLowerCase().includes(lowerSearchKey));
                 break;
             case 'author':
             case 'artiest':
@@ -80,7 +80,7 @@ export default class SongHandler {
             case 'muziekant':
             case 'componist':
             case 'composer':
-                songs = list.filter(s => s.artist.toLowerCase().includes(lowerSearchKey));
+                songs = list.filter(s => s.track.artist.toLowerCase().includes(lowerSearchKey));
                 break;
             case 'plaats':
             case 'positie':
@@ -103,7 +103,7 @@ export default class SongHandler {
                 break;
             default:
                 lowerSearchKey = `${searchType.toLowerCase()} ${lowerSearchKey}`;
-                songs = list.filter(s => s.title.toLowerCase().includes(lowerSearchKey));
+                songs = list.filter(s => s.track.title.toLowerCase().includes(lowerSearchKey));
                 if (songs.length == 0) {
                     MessageService.ReplyMessage(messageInfo, `Ik heb geen nummers kunnen vinden met '${searchKey}' als titel.`, false, true);
                     return;
@@ -156,12 +156,12 @@ export default class SongHandler {
         }
 
         const list = await Top2KProvider.GetTop2KList();
-        const song = list[position - 1];
+        const song = list[position-1];
 
         const currentPosition = Top2KProvider.GetCurrentPosition();
 
-        const title = `**${song.title}**`;
-        const artist = `**${song.artist}**`;
+        const title = `**${song.track.title}**`;
+        const artist = `**${song.track.artist}**`;
 
         if (currentPosition < position) {
             MessageService.ReplyMessage(messageInfo, `${title} van ${artist} is al geweest.`, false);

@@ -30,10 +30,6 @@ export default class BotManager {
 
         setInterval(() => {
             const time = new Date().getTime();
-            if (time < 1640386800000 || time > 1640991600000) {
-                return;
-            }
-
             BotManager.SendTop2KUpdates();
         }, Utils.GetSecondsInMilliseconds(15));
     }
@@ -61,7 +57,7 @@ export default class BotManager {
                 const message = await MessageService.SendMessageToTop2KChannel('', Top2KEmbeds.GetSongEmbed(song));
                 this.OnNewSong();
                 await Utils.Sleep(5);
-                message.crosspost();
+                //message.crosspost();
             }
         }
     }

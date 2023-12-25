@@ -14,16 +14,16 @@ export default class Top2KSong {
     private statsUrl: string;
 
     constructor(data: any) {
-        this.id = data.id;
-        this.title = data.title;
-        this.artist = data.artist;
-        this.currentPosition = data.position;
-        this.previousPosition = data.lastPosition;
+        this.id = data.track.id;
+        this.title = data.track.title;
+        this.artist = data.track.artist;
+        this.currentPosition = data.position.current;
+        this.previousPosition = data.position.previous;
         this.change = this.previousPosition == 0 ? undefined : this.previousPosition - this.currentPosition;
-        this.imageUrl = data.imageUrl;
-        this.pageUrl = `${Top2KConstants.BASE_URL}/muziek/nummers/${this.id}/${this.title.replaceAll(' ', '-')}`;
-        this.audioUrl = data.trackPreviewUrl;
-        this.statsUrl = data.trackHistoryUrl?.isFilled() ? Top2KConstants.BASE_URL + data.trackHistoryUrl : null;
+        this.imageUrl = data.track.coverUrl;
+        this.pageUrl = `${Top2KConstants.BASE_URL}${data.track.detailUrl}`;
+        this.audioUrl = data.track.previewUrl;
+        this.statsUrl = data.track.historyUrl?.isFilled() ? Top2KConstants.BASE_URL + data.track.historyUrl : null;
     }
 
     public GetId() {

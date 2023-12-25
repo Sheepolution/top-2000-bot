@@ -21,15 +21,15 @@ export default class Top2KProvider {
 
     public static async GetNewCurrentSong() {
         const song = await this.GetCurrentSongJSON();
-        if (song?.data?.radio_track_plays?.data == null) {
+        if (song.data?.radioTrackPlays.data == null) {
             return;
         }
 
-        if (song.data.radio_track_plays.data.length == 0) {
+        if (song.data.radioTrackPlays.data.length == 0) {
             return;
         }
 
-        let songData = song.data.radio_track_plays.data[0];
+        let songData = song.data.radioTrackPlays.data[0];
         if (songData.radioTracks != null) {
             songData = songData.radioTracks;
         }
@@ -38,7 +38,7 @@ export default class Top2KProvider {
             return;
         }
 
-        let songInList = this.list.find((s: any) => s.title == songData.song && s.artist == songData.artist);
+        let songInList = this.list.find((s: any) => s.id == songData.id || (s.track.title == songData.song && s.track.artist == songData.artist));
 
         if (songInList == null) {
             const song = await this.GetCurrentSongJSON2();
@@ -124,7 +124,7 @@ export default class Top2KProvider {
     }
 
     private static async GetTopListJSON() {
-        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/chart/positions?editionSlug=top-2000-van-2021-12-25`);
+        return await this.GetJSON(`${Top2KConstants.BASE_URL}/api/charts/top-2000-van-2023-12-25`);
     }
 
     private static async GetCurrentSongJSON() {
