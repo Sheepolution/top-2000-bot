@@ -42,6 +42,17 @@ export default class Top2KProvider {
         let songInList = this.list.find((s: any) => s.track.id == songData.id || (s.track.title == (songData.name ?? songData.song) && s.track.artist == songData.artist));
 
         if (songInList == null) {
+            songInList = this.list.find((s: any) => {
+                if (s.track.artist != songData.artist && !s.track.title.includes(songData.name) && !songData.name.includes(s.track.title)) {
+                    return false;
+                }
+
+                return s.track.artist == songData.artist && s.track.title.includes(songData.name) && songData.name.includes(s.track.title);
+            });
+        }
+
+        if (songInList == null) {
+            console.log(songData.name, songData.song, songData.artist);
             const song = await this.GetCurrentSongJSON2();
             if (song?.data?.radio_track_plays?.data == null) {
                 return;
