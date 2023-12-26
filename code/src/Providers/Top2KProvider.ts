@@ -6,6 +6,7 @@ const fetch = require('node-fetch');
 export default class Top2KProvider {
 
     private static currentSongId: string;
+    private static currentSongTitle: string;
     private static currentPosition: number = -1;
     private static currentPresenterId: string;
     private static list: Array<any> = new Array<any>();
@@ -38,7 +39,7 @@ export default class Top2KProvider {
             return;
         }
 
-        let songInList = this.list.find((s: any) => s.id == songData.id || (s.track.title == songData.song && s.track.artist == songData.artist));
+        let songInList = this.list.find((s: any) => s.track.id == songData.id || (s.track.title == (songData.name ?? songData.song) && s.track.artist == songData.artist));
 
         if (songInList == null) {
             const song = await this.GetCurrentSongJSON2();
@@ -56,7 +57,7 @@ export default class Top2KProvider {
                 return;
             }
 
-            songInList = this.list.find((s: any) => s.id == songData.id);
+            songInList = this.list.find((s: any) => s.id == songData.id || (s.track.title == (songData.name ?? songData.song) && s.track.artist == songData.artist));
             if (songInList == null) {
                 return;
             }
@@ -73,6 +74,7 @@ export default class Top2KProvider {
         }
 
         this.currentSongId  = songId;
+        this.currentSongTitle = songInList.track.title;
 
         this.seen.push(this.currentSongId);
 
