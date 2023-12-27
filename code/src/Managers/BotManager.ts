@@ -87,7 +87,7 @@ export default class BotManager {
         const list = await Top2KProvider.GetTop2KList();
         const nextSong = list[currentPosition - 2];
 
-        const reminderMessage = `Zometeen komt **${nextSong.title}** van **${nextSong.artist}**.\n`;
+        const reminderMessage = `Zometeen komt **${nextSong.track.title}** van **${nextSong.track.artist}**.\n`;
         for (const id in reminders) {
             MessageService.SendMessageToDMById(id, reminderMessage);
         }
